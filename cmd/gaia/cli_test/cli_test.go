@@ -176,6 +176,9 @@ func TestGaiaCLISubmitProposal(t *testing.T) {
 	fooAcc := executeGetAccount(t, fmt.Sprintf("gaiacli account %s %v", fooAddr, flags))
 	require.Equal(t, int64(50), fooAcc.GetCoins().AmountOf("steak").Int64())
 
+	proposalsQuery := tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals %v", flags))
+	require.Equal(t, "No matching proposals found", proposalsQuery)
+
 	// unbond a single share
 	spStr := fmt.Sprintf("gaiacli gov submit-proposal %v", flags)
 	spStr += fmt.Sprintf(" --from=%s", "foo")
@@ -193,6 +196,9 @@ func TestGaiaCLISubmitProposal(t *testing.T) {
 	proposal1 := executeGetProposal(t, fmt.Sprintf("gaiacli gov query-proposal --proposal-id=1 --output=json %v", flags))
 	require.Equal(t, int64(1), proposal1.GetProposalID())
 	require.Equal(t, gov.StatusDepositPeriod, proposal1.GetStatus())
+
+	proposalsQuery = tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals %v", flags))
+	require.Equal(t, "  1 - Test", proposalsQuery)
 
 	depositStr := fmt.Sprintf("gaiacli gov deposit %v", flags)
 	depositStr += fmt.Sprintf(" --from=%s", "foo")
@@ -224,6 +230,12 @@ func TestGaiaCLISubmitProposal(t *testing.T) {
 	require.Len(t, votes, 1)
 	require.Equal(t, int64(1), votes[0].ProposalID)
 	require.Equal(t, gov.OptionYes, votes[0].Option)
+
+	proposalsQuery = tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals --status=DepositPeriod %v", flags))
+	require.Equal(t, "No matching proposals found", proposalsQuery)
+
+	proposalsQuery = tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals --status=VotingPeriod %v", flags))
+	require.Equal(t, "  1 - Test", proposalsQuery)
 }
 
 //___________________________________________________________________________________
