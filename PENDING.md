@@ -24,6 +24,7 @@ BREAKING CHANGES
   * `gaiacli gov deposit --depositer`
   * `gaiacli gov vote --voter`
 * [x/gov] Added tags sub-package, changed tags to use dash-case 
+* [x/gov] Governance parameters are now stored in globalparams store
 
 FEATURES
 * [lcd] Can now query governance proposals by ProposalStatus
@@ -35,6 +36,7 @@ FEATURES
 * [cosmos-sdk-cli] Added support for cosmos-sdk-cli tool under cosmos-sdk/cmd	
    * This allows SDK users to initialize a new project repository.
 * [tests] Remotenet commands for AWS (awsnet)
+* [store] Add transient store
 * [cli] added `gov query-proposals` command to CLI. Can filter by `depositer`, `voter`, and `status`
 
 IMPROVEMENTS
@@ -48,6 +50,7 @@ IMPROVEMENTS
 * [x/bank] Unit tests are now table-driven
 * [tests] Fixes ansible scripts to work with AWS too
 * [tests] \#1806 CLI tests are now behind the build flag 'cli_test', so go test works on a new repo
+* [x/gov] Initial governance parameters can now be set in the genesis file
 
 BUG FIXES
 *  \#1666 Add intra-tx counter to the genesis validators
