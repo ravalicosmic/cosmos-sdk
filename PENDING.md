@@ -25,6 +25,7 @@ BREAKING CHANGES
   * `gaiacli gov vote --voter`
 * [x/gov] Added tags sub-package, changed tags to use dash-case 
 * [x/gov] Governance parameters are now stored in globalparams store
+* [cli] Genesis/key creation (`init`) now supports user-provided key passwords
 
 FEATURES
 * [lcd] Can now query governance proposals by ProposalStatus
