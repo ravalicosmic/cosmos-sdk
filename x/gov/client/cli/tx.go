@@ -255,6 +255,10 @@ func GetCmdQueryProposals(storeName string, cdc *wire.Codec) *cobra.Command {
 
 			matchingProposals := []gov.Proposal{}
 
+			if latestProposalsIDs == 0 {
+				latestProposalsIDs = maxProposalID
+			}
+
 			for proposalID := maxProposalID - latestProposalsIDs; proposalID < maxProposalID; proposalID++ {
 				if voterAddr != nil {
 					res, err = ctx.QueryStore(gov.KeyVote(proposalID, voterAddr), storeName)
