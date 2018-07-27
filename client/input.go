@@ -28,12 +28,15 @@ func GetPassword(prompt string, buf *bufio.Reader) (pass string, err error) {
 	} else {
 		pass, err = readLineFromBuf(buf)
 	}
+
 	if err != nil {
 		return "", err
 	}
+
 	if len(pass) < MinPassLength {
-		return "", errors.Errorf("password must be at least %d characters", MinPassLength)
+		return pass, errors.Errorf("password must be at least %d characters", MinPassLength)
 	}
+
 	return pass, nil
 }
 
