@@ -15,15 +15,16 @@ import (
 )
 
 const (
-	flagProposalID   = "proposal-id"
-	flagTitle        = "title"
-	flagDescription  = "description"
-	flagProposalType = "type"
-	flagDeposit      = "deposit"
-	flagVoter        = "voter"
-	flagOption       = "option"
-	flagDepositer    = "depositer"
-	flagStatus       = "status"
+	flagProposalID        = "proposal-id"
+	flagTitle             = "title"
+	flagDescription       = "description"
+	flagProposalType      = "type"
+	flagDeposit           = "deposit"
+	flagVoter             = "voter"
+	flagOption            = "option"
+	flagDepositer         = "depositer"
+	flagStatus            = "status"
+	flagLatestProposalIDs = "latest"
 )
 
 // submit a proposal tx
@@ -215,6 +216,7 @@ func GetCmdQueryProposals(storeName string, cdc *wire.Codec) *cobra.Command {
 			bechDepositerAddr := viper.GetString(flagDepositer)
 			bechVoterAddr := viper.GetString(flagVoter)
 			strProposalStatus := viper.GetString(flagStatus)
+			latestProposalsIDs := viper.GetInt64(flagLatestProposalIDs)
 
 			var err error
 			var voterAddr sdk.AccAddress
@@ -253,7 +255,7 @@ func GetCmdQueryProposals(storeName string, cdc *wire.Codec) *cobra.Command {
 
 			matchingProposals := []gov.Proposal{}
 
-			for proposalID := int64(0); proposalID < maxProposalID; proposalID++ {
+			for proposalID := maxProposalID - latestProposalsIDs; proposalID < maxProposalID; proposalID++ {
 				if voterAddr != nil {
 					res, err = ctx.QueryStore(gov.KeyVote(proposalID, voterAddr), storeName)
 					if err != nil || len(res) == 0 {
@@ -297,6 +299,7 @@ func GetCmdQueryProposals(storeName string, cdc *wire.Codec) *cobra.Command {
 		},
 	}
 
+	cmd.Flags().String(flagLatestProposalIDs, "", "(optional) limit to latest [number] proposals. Defaults to all proposals")
 	cmd.Flags().String(flagDepositer, "", "(optional) filter by proposals deposited on by depositer")
 	cmd.Flags().String(flagVoter, "", "(optional) filter by proposals voted on by voted")
 	cmd.Flags().String(flagStatus, "", "(optional) filter proposals by proposal status")

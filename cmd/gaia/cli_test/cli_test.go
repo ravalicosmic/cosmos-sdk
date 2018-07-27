@@ -179,7 +179,7 @@ func TestGaiaCLISubmitProposal(t *testing.T) {
 	proposalsQuery := tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals %v", flags))
 	require.Equal(t, "No matching proposals found", proposalsQuery)
 
-	// unbond a single share
+	// submit a test proposal
 	spStr := fmt.Sprintf("gaiacli gov submit-proposal %v", flags)
 	spStr += fmt.Sprintf(" --from=%s", "foo")
 	spStr += fmt.Sprintf(" --deposit=%s", "5steak")
@@ -236,6 +236,20 @@ func TestGaiaCLISubmitProposal(t *testing.T) {
 
 	proposalsQuery = tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals --status=VotingPeriod %v", flags))
 	require.Equal(t, "  1 - Test", proposalsQuery)
+
+	// submit a second test proposal
+	spStr = fmt.Sprintf("gaiacli gov submit-proposal %v", flags)
+	spStr += fmt.Sprintf(" --from=%s", "foo")
+	spStr += fmt.Sprintf(" --deposit=%s", "5steak")
+	spStr += fmt.Sprintf(" --type=%s", "Text")
+	spStr += fmt.Sprintf(" --title=%s", "Test 2")
+	spStr += fmt.Sprintf(" --description=%s", "test")
+
+	executeWrite(t, spStr, pass)
+	tests.WaitForNextNBlocksTM(2, port)
+
+	proposalsQuery = tests.ExecuteT(t, fmt.Sprintf("gaiacli gov query-proposals --latest=1 %v", flags))
+	require.Equal(t, "  2 - Test 2", proposalsQuery)
 }
 
 //___________________________________________________________________________________
